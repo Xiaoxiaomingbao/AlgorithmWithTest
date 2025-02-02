@@ -8,8 +8,8 @@ public class BinarySearch {
     public static int binarySearch(int[] arr, int target) {
         int left = 0;
         int right = arr.length - 1;
-        int mid = (left + right) / 2;
-        while (mid >= left && mid <= right) {
+        while (left <= right) {  // 自始至终将搜索目标锁定在 [left, right]
+            int mid = left + ((right - left) >> 1);  // 防溢出
             if (target == arr[mid]) {
                 return mid;
             }
@@ -20,7 +20,6 @@ public class BinarySearch {
                 else {
                     right = mid - 1;
                 }
-                mid = (left + right) / 2;
             }
         }
         return -1;
@@ -33,53 +32,54 @@ public class BinarySearch {
      * @return 返回下标，找不到返回-1
      */
     public static int leftmostPlace(int[] arr, int target) {
+        int ans = -1;
         int left = 0;
         int right = arr.length - 1;
-        int mid = (left + right) / 2;
-        while (mid >= left && mid <= right) {
+        while (left <= right) {  // 自始至终将搜索目标锁定在 [left, right]
+            int mid = left + ((right - left) >> 1);
             if (arr[mid] >= target) {
-                if (left == right) {
-                    return mid;
-                }
-                right = mid;  // 避免错失最优解
+                ans = mid;  // 记录下当前找到的解（数组中大于等于 target 的数），继续找下去未必会发现更优解
+                right = mid - 1;
             }
             else {
                 left = mid + 1;
             }
-            mid = (left + right) / 2;
         }
-        return -1;
+        return ans;
     }
 
     /**
-     * 某数小于左右相邻两数，则定义其为局部最小值，求解出一个局部最小值即可
-     * @param arr 无序数组，要求相邻两数不等，长度至少为2
-     * @return 局部最小值（必存在），返回-1说明发生异常
+     * 设 -1 和 arr.length 位置的数为无穷小，若某数同时大于左右两侧的数，则定义为峰值
+     * @param arr 无序数组，要求相邻两数不等
+     * @return 一个峰值所在的位置
      */
-    public static int localMinimum(int[] arr) {
-        // 先判断首尾的变化趋势
-        if (arr[0] < arr[1]) {
+    public static int peak(int[] arr) {
+        if (arr.length == 1) {
             return 0;
         }
-        if (arr[arr.length - 1] < arr[arr.length - 2]) {
+        // arr.length >= 2
+        // 单独检查 0 位置是不是峰值点
+        if (arr[0] > arr[1]) {
+            return 0;
+        }
+        // 单独检查 arr.length - 1 位置是不是峰值点
+        if (arr[arr.length - 1] > arr[arr.length - 2]) {
             return arr.length - 1;
         }
         int left = 1;
         int right = arr.length - 2;
-        int mid = (left + right) / 2;
-        while (left <= right) {
-            if (left == mid) {  // 防止left和right相邻时出现死循环
-                return mid;
-            }
-            // 自始至终保证left到right的闭区间中包含局部最小值
-            if (arr[mid] < arr[mid - 1]) {
-                left = mid;
-            }
-            else {
+        int ans = -1;  // 可证明峰值一定存在，不会返回 -1
+        while (left <= right) {  // 自始至终将搜索目标锁定在 [left, right]
+            int mid = left + ((right - left) >> 1);
+            if (arr[mid - 1] > arr[mid]) {  // ↗ ↘
                 right = mid - 1;
+            } else if (arr[mid] < arr[mid + 1]) {  // ↗ ↘
+                left = mid + 1;
+            } else {
+                ans = mid;
+                break;
             }
-            mid = (left + right) / 2;
         }
-        return -1;
+        return ans;
     }
 }
