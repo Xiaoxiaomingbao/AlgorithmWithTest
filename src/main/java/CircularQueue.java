@@ -1,7 +1,5 @@
 public class CircularQueue {
-    // 用数组实现“循环队列”
-    // 就功能而言，和普通队列并无差异
-    // 这里并未实现自动扩容的机制
+    // 用循环数组实现队列（不带自动扩容机制）
     private final int[] queue;
     private int front, rear, size;  // right 记录第一个空位，left 记录最后一个满位
 
