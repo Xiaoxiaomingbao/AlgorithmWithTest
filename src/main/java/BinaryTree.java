@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Stack;
 
 public class BinaryTree {
@@ -116,5 +117,23 @@ public class BinaryTree {
             }
         }
         System.out.println();
+    }
+
+    public static BinaryTreeNode buildPreIn(List<Integer> pre, List<Integer> in) {
+        return buildPreIn(pre, 0, pre.size(), in, 0, in.size());
+    }
+
+    private static BinaryTreeNode buildPreIn(List<Integer> pre, int start1, int end1,
+                                             List<Integer> in, int start2, int end2) {
+        if (start1 >= end1) {return null;}
+        if (start2 >= end2) {return null;}
+        int rootVal = pre.get(start1);
+        int rootIdx = in.indexOf(rootVal);
+        if (rootIdx < 0) {return null;}
+        int leftLen = rootIdx - start2;
+        BinaryTreeNode root = new BinaryTreeNode(rootVal);
+        root.left = buildPreIn(pre, start1 + 1, start1 + leftLen + 1, in, start2, rootIdx);
+        root.right = buildPreIn(pre, start1 + leftLen + 1, end1, in, rootIdx + 1, end2);
+        return root;
     }
 }
