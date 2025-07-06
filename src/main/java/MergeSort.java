@@ -16,7 +16,7 @@ public class MergeSort {
         merge(arr, l, m, r);
     }
 
-    private static void merge(int[] arr, int l, int m, int r) {
+    public static void merge(int[] arr, int l, int m, int r) {
         int[] help = new int[r - l + 1];
         int i = 0;
         int a = l;
